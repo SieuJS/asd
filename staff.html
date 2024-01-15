@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>STAFF PAGE</title>
+
+  <script src="staff.js"> </script>
+
+  <link rel="stylesheet" href="staff.css">
+</head>
+
+<body>
+
+  <div class="tab">
+    <button class="tablinks" onclick="openTab(event, 'allPatientsInfoTab')">Display All Patient
+      Info</button>
+    <button class="tablinks" onclick="openTab(event, 'getPatientInfoTab')">Get Patient Info</button>
+    <button class="tablinks" onclick="openTab(event, 'addPatientInfoTab')">Add Patient Info</button>
+    <button class="tablinks" onclick="openTab(event, 'addMedicalRegisterTab')">Add Medical Register Form</button>
+  </div>
+
+
+  <div id="allPatientsInfoTab" class="tabcontent">
+    <button onclick="getAllPatientsInfo()" style="margin-top:20px">Display all patients information</button>
+    <div id="allPatientsInfo">
+      <table id="patientsTable"></table>
+    </div>
+  </div>
+
+  <div id="getPatientInfoTab" class="tabcontent">
+    <h2>Get patient info</h2>
+      <form id="getPatientInfoForm">
+        <label for="patientPhoneNumber">Patient phone number:</label>
+        <input type="text" id="patientPhoneNumber" name="patientPhoneNumber" required><br><br>
+        <input type="submit" value="Get patient information">
+      </form>
+      <div id="getPatientInfo"></div>
+  </div>
+
+  <div id="addPatientInfoTab" class="tabcontent">
+    <h2>Add patient information</h2>
+    <form id="addPatientInfoForm">
+      <label for="addPatientFullName">Patient name:</label>
+      <input type="text" id="addPatientFullName" name="addPatientFullName" required><br><br>
+
+      <label for="addPatientPhoneNumber">Patient phone number:</label>
+      <input type="text" id="addPatientPhoneNumber" name="addPatientPhoneNumber" required><br><br>
+
+      <label for="addPatientPassword">Patient password:</label>
+      <input type="text" id="addPatientPassword" name="addPatientPassword" required><br><br>
+
+      <label for="addPatientDateOfBirth">Patient date of birth:</label>
+      <input type="date" id="addPatientDateOfBirth" name="addPatientDateOfBirth" required><br><br>
+
+      <label for="addPatientAddress">Patient address:</label>
+      <input type="text" id="addPatientAddress" name="addPatientAddress" required><br><br>
+
+      <input type="submit" value="Add patient information">
+    </form>
+    <div id="patientAddResult"></div>
+  </div>
+
+  <div id="addMedicalRegisterTab" class="tabcontent">
+    <h2>Add medical register form </h2>
+    <form id="medicalRegisterForm">
+      <label for="patientFullName">Patient name:</label>
+      <input type="text" id="patientFullName" name="patientFullName" required><br><br>
+
+      <label for="medicalPatientPhoneNumber">Patient phone number:</label>
+      <input type="text" id="medicalPatientPhoneNumber" name="medicalPatientPhoneNumber" required><br><br>
+
+      <label for="patientDateOfBirth">Patient date of birth:</label>
+      <input type="date" id="patientDateOfBirth" name="patientDateOfBirth" required><br><br>
+
+      <label for="patientAddress">Patient address:</label>
+      <input type="text" id="patientAddress" name="patientAddress" required><br><br>
+
+      <label for="appointmentDate">Appointment date:</label>
+      <input type="date" id="appointmentDate" name="appointmentDate" required><br><br>
+
+      <label for="appointmentTime">Appointment time:</label>
+      <input type="time" id="appointmentTime" name="appointmentTime" required><br><br>
+
+      <input id="checkAvailableDentist" type="submit" value="Check available dentists">
+    </form>
+    <select id="displayAvailableDentist" name="displayAvailableDentist" required> </select><br><br>
+
+    <button id="confirmAddMedicalRegisterButton"> Add medical register form </button>
+
+    <div id="registerMedicalFormResult"></div>
+
+    <button id="printMedicalRegisterFormInfoButton">Print medical register form information</button>
+  </div>
+
+
+  <!-- Modal -->
+  <div id="myModal" class="modal">
+    <!-- Nội dung modal -->
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Xác nhận thông tin đặt lịch</h2>
+      <p id="confirmationInfo">Thông tin đặt lịch:</p>
+      <button id="confirmButton">Xác nhận</button>
+      <button id="backButton">Quay lại</button>
+    </div>
+  </div>
+
+  <script>
+    const getPatientInfoForm = document.getElementById('getPatientInfoForm');
+    getPatientInfoForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const patientPhoneNumber = document.getElementById('patientPhoneNumber').value;
+      getPatientInfo(patientPhoneNumber);
+    });
+
+    const addPatientInfoForm = document.getElementById('addPatientInfoForm');
+    addPatientInfoForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      const patientFullName = document.getElementById('addPatientFullName').value;
+      const patientPhoneNumber = document.getElementById('addPatientPhoneNumber').value;
+      const patientPassword = document.getElementById('addPatientPassword').value;
+      const patientDateOfBirth = document.getElementById('addPatientDateOfBirth').value;
+      const patientAddress = document.getElementById('addPatientAddress').value;
+      addPatientInfo(patientFullName, patientPhoneNumber, patientPassword, patientDateOfBirth, patientAddress)
+    });
+
+    const medicalRegisterForm = document.getElementById('medicalRegisterForm');
+    medicalRegisterForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+      document.getElementById('displayAvailableDentist').style.display = 'block';
+      const appointmentDate = document.getElementById('appointmentDate').value;
+      const appointmentTime = document.getElementById('appointmentTime').value;
+      displayAvailableDentist(appointmentDate, appointmentTime);
+    });
+
+    const modal = document.getElementById('myModal');
+    const closeButton = document.getElementsByClassName('close')[0];
+    const backButton = document.getElementById('backButton');
+    const confirmationInfo = document.getElementById('confirmationInfo');
+
+    function showModal() {
+      modal.style.display = 'block';
+    }
+
+    function hideModal() {
+      modal.style.display = 'none';
+    }
+
+    const confirmAddMedicalRegisterButton = document.getElementById('confirmAddMedicalRegisterButton');
+    confirmAddMedicalRegisterButton.addEventListener('click', function (event) {
+      event.preventDefault();
+      const patientFullName = document.getElementById('patientFullName').value;
+      const medicalPatientPhoneNumber = document.getElementById('medicalPatientPhoneNumber').value;
+      const patientDateOfBirth = document.getElementById('patientDateOfBirth').value;
+      const patientAddress = document.getElementById('patientAddress').value;
+      const appointmentDate = document.getElementById('appointmentDate').value;
+      const appointmentTime = document.getElementById('appointmentTime').value;
+
+      const allTextContents = document.getElementById('displayAvailableDentist');
+      const indexOfSelectedOption = allTextContents.selectedIndex;
+      const dentistFullName = allTextContents.options[indexOfSelectedOption].textContent;
+
+      console.log(dentistFullName + 'a');
+      if (patientFullName && medicalPatientPhoneNumber && patientDateOfBirth
+        && patientAddress && appointmentDate && appointmentTime && (dentistFullName !== ' ')) {
+        confirmationInfo.innerHTML = `
+                Patient full name: ${patientFullName} <br> 
+                Patient phone number: ${medicalPatientPhoneNumber} <br> 
+                Date of birth: ${patientDateOfBirth} <br> 
+                Address: ${patientAddress} <br> 
+                Ngày hẹn: ${appointmentDate} <br> 
+                Giờ hẹn: ${appointmentTime} <br> 
+                Nha sĩ phụ trách: ${dentistFullName}`;
+        showModal();
+      } else {
+        alert('Vui lòng cung cấp đầy đủ thông tin!');
+      }
+    });
+
+    const printMedicalRegisterFormInfoButton = document.getElementById('printMedicalRegisterFormInfoButton');
+    printMedicalRegisterFormInfoButton.addEventListener('click', function (event) {
+      event.preventDefault();
+      const patientFullName = document.getElementById('patientFullName').value;
+      const medicalPatientPhoneNumber = document.getElementById('medicalPatientPhoneNumber').value;
+      const patientDateOfBirth = document.getElementById('patientDateOfBirth').value;
+      const patientAddress = document.getElementById('patientAddress').value;
+      const appointmentDate = document.getElementById('appointmentDate').value;
+      const appointmentTime = document.getElementById('appointmentTime').value;
+
+      const allTextContents = document.getElementById('displayAvailableDentist');
+      const indexOfSelectedOption = allTextContents.selectedIndex;
+      const dentistFullName = allTextContents.options[indexOfSelectedOption].textContent;
+
+      if (patientFullName && medicalPatientPhoneNumber && patientDateOfBirth
+        && patientAddress && appointmentDate && appointmentTime && (dentistFullName !== ' ')) {
+        alert('In thông tin phiếu khám bệnh thành công');
+      } else {
+        alert('In thông tin thất bại, vui lòng cung cấp đầy đủ thông tin!');
+      }
+    });
+
+    // Sự kiện khi ấn nút Confirm
+    const confirmButton = document.getElementById('confirmButton');
+    confirmButton.addEventListener('click', function () {
+      const patientFullName = document.getElementById('patientFullName').value;
+      const medicalPatientPhoneNumber = document.getElementById('medicalPatientPhoneNumber').value;
+      const patientDateOfBirth = document.getElementById('patientDateOfBirth').value;
+      const patientAddress = document.getElementById('patientAddress').value;
+      const appointmentDate = document.getElementById('appointmentDate').value;
+      const appointmentTime = document.getElementById('appointmentTime').value;
+      const dentistUserName = document.getElementById('displayAvailableDentist').value;
+      addMedicalRegisterForm(patientFullName, medicalPatientPhoneNumber, patientDateOfBirth, patientAddress, appointmentDate, appointmentTime, dentistUserName);
+      hideModal(); // Ẩn modal sau khi xác nhận
+    });
+
+    // Sự kiện khi ấn nút Back
+    backButton.addEventListener('click', function () {
+      hideModal(); // Ẩn modal khi quay lại để chỉnh sửa thông tin
+    });
+
+    // Sự kiện khi ấn nút đóng modal
+    closeButton.addEventListener('click', function () {
+      hideModal(); // Ẩn modal khi ấn nút đóng
+    });
+
+  </script>
+
+
+
+</body>
+
+</html>

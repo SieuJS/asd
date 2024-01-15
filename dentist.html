@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>DENTIST PAGE</title>
+
+  <script src="dentist.js"></script>
+  
+  <link rel="stylesheet" href="dentist.css">
+</head>
+<body>
+    <h1>DENTIST PAGE</h1>
+
+    <div class="tab">
+      <button class="tablinks" onclick="openTab(event, 'addPatientMedicalRecordTab')">Add patient medical record</button>
+      <button class="tablinks" onclick="openTab(event, 'checkAppointmentsTab')">Check Appointment</button>
+      
+    </div>
+
+
+    <div id="addPatientMedicalRecordTab" class="tabcontent">
+      <h2>Add patient medical record</h2>
+      <form id="addPatientMedicalRecordForm">
+        <div class="form-row">
+          <label for="addPatientPhoneNumber">Patient phone number:</label>
+          <input type="text" id="addPatientPhoneNumber" name="addPatientPhoneNumber" required><br><br>
+        </div>
+      
+        <div class="form-row">
+          <label for="addExaminationDate">Examination date:</label>
+          <input type="date" id="addExaminationDate" name="addExaminationDate" required><br><br>
+        </div>
+        <div class="form-row">
+          <label for="addExaminationTime">Examination time:</label>
+          <input type="time" id="addExaminationTime" name="addExaminationTime" required><br><br>
+        </div>
+        <input type="submit" value="Add services and drugs">
+      </form>
+    
+    
+    
+    <!-- <button id="displaySearchServiceForm" onclick="document.getElementById('searchServiceForm').style.display = 'block'">Thêm dịch vụ</button> -->
+    <form id="searchServiceForm">
+      <div class="form-row">
+        <label for="serviceName">Tên dịch vụ:</label>
+        <input type="text" id="serviceName" name="serviceName" required>
+      </div>
+      <input type="submit" value="Dịch vụ">
+    </form> 
+      <div id="searchServiceResult"></div>
+      <div id="addServiceResult"></div>
+      <div id="servicesList"></div>
+
+    <!-- <button id="displaySearchDrugForm" onclick="document.getElementById('searchDrugForm').style.display = 'block'">Thêm thuốc</button> -->
+    <form id="searchDrugForm">
+      <div class="form-row">
+        <label for="drugName">Tên thuốc:</label>
+        <input type="text" id="drugName" name="drugName" required>
+      </div>
+      <input type="submit" value="Thuốc">
+    </form>
+    <div id="searchDrugResult"></div>
+    <div id="addDrugResult"></div>
+    <div id="drugsList"></div>
+
+    <button id="confirmAddMedicalRecordButton">Confirm add medical record</button>
+    <div id="patientMedicalRecordAddResult"></div>
+    </div>
+    
+    <div id="checkAppointmentsTab" class="tabcontent">
+      <h2>Check appointments list</h2>
+      <form id="checkAppointmentsListByDateForm">
+        <label for="selectedDate">Choose date:</label>
+        <input type="date" id="selectedDate" name="selectedDate" required><br><br>
+        <input type="submit" value="Check appointments list">
+      </form>
+      
+      <div id="checkAppointmentsListByDateResult"></div>
+    </div>
+
+    <script>
+
+      const addPatientMedicalRecordForm = document.getElementById('addPatientMedicalRecordForm');
+      addPatientMedicalRecordForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        document.getElementById('searchServiceForm').style.display = 'block';
+        document.getElementById('searchDrugForm').style.display = 'block';
+      });
+
+      const searchServiceForm = document.getElementById('searchServiceForm');
+      searchServiceForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const serviceName = document.getElementById('serviceName').value;
+        searchService(serviceName);
+      });
+
+      const searchDrugForm = document.getElementById('searchDrugForm');
+      searchDrugForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const drugName = document.getElementById('drugName').value;
+        searchDrug(drugName);
+      });
+
+      const confirmAddMedicalRecordButton = document.getElementById('confirmAddMedicalRecordButton');
+      confirmAddMedicalRecordButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        const patientPhoneNumber = document.getElementById('addPatientPhoneNumber').value;
+        const examinationDate = document.getElementById('addExaminationDate').value;
+        const examinationTime = document.getElementById('addExaminationTime').value;
+        const servicesId = selectedServicesId;
+        const drugsId = selectedDrugsId;
+        const drugsQuantity = selectedDrugsQuantity;
+        if (patientPhoneNumber && examinationDate && examinationTime && servicesId && drugsId && drugsQuantity) {
+          addPatientMedicalRecord(patientPhoneNumber, examinationDate, examinationTime, servicesId, drugsId, drugsQuantity);
+        } else {
+          alert('Vui lòng cung cấp đầy đủ thông tin!');
+        }
+      });
+
+      const checkAppointmentsListByDateForm = document.getElementById('checkAppointmentsListByDateForm');
+      checkAppointmentsListByDateForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const dentistUserName = sessionStorage.getItem('loggedInUser');
+        const selectedDate = document.getElementById('selectedDate').value;
+        checkAppointmentsListByDate(dentistUserName,selectedDate);
+      });
+    
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PATIENT PAGE</title>
+    <script src="staff.js"></script>
+    <script src="patient.js"></script>
+
+
+    <link rel="stylesheet" href="patient.css">
+
+</head>
+<body>
+    <h1>PATIENT PAGE</h1>
+
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'personalInfo')">Personal Information</button>
+        <button class="tablinks" onclick="openTab(event, 'updatePersonalInfo')">Update Personal Information</button>
+        <button class="tablinks" onclick="openTab(event, 'scheduleAppointment')">Schedule Appointment</button>
+        <button class="tablinks" onclick="openTab(event, 'allAppointmentsInfo')">All Appointments Info</button>
+      </div>
+      
+      <div id="personalInfo" class="tabcontent"><br><br>
+        <button id="getPatientInfoButton">Get Personal Information</button>
+        <div id="getPatientInfo"></div>
+      </div>
+
+      <div id="updatePersonalInfo" class="tabcontent">
+        <h2>Update personal information</h2>
+        <class id="updatePatientInfo">
+          <form id="update">
+            <label for="updatePatientPhoneNumber">Enter patient phone number:</label>
+            <input type="text" id="updatePatientPhoneNumber" name="updatePatientPhoneNumber" required><br><br>
+            <input type="submit" value="Update">
+          </form>
+          <form id="confirmUpdate">
+            <label for="updatePatientFullName">New patient name:</label>
+            <input type="text" id="updatePatientFullName" name="updatePatientFullName" required><br><br>
+    
+            <label for="updatePatientPassword">New patient password:</label>
+            <input type="text" id="updatePatientPassword" name="updatePatientPassword" required><br><br>
+    
+            <label for="updatePatientDateOfBirth">New patient date of birth:</label>
+            <input type="date" id="updatePatientDateOfBirth" name="updatePatientDateOfBirth" required><br><br>
+    
+            <label for="updatePatientAddress">New patient address:</label>
+            <input type="text" id="updatePatientAddress" name="updatePatientAddress" required><br><br>
+    
+            <input type="submit" value="Confirm update patient information">
+          </form>
+    
+        </class>
+        <div id="patientUpdateResult"></div>
+      </div>
+
+      
+      <div id="scheduleAppointment" class="tabcontent">
+        <h2>Schedule Appointment</h2>
+        <form id="appointmentForm">
+          <label for="appointmentDate">Appointment date:</label>
+          <input type="date" id="appointmentDate" name="appointmentDate" required><br><br>
+      
+          <label for="appointmentTime">Appointment time:</label>
+          <input type="time" id="appointmentTime" name="appointmentTime" required><br><br>
+      
+          <input id="checkAvailableDentist" type="submit" value="Check available dentists">
+        </form>
+        <select id="displayAvailableDentist" name="displayAvailableDentist" required></select><br><br>
+        <button id="confirmScheduleButton"> Schedule appointment </button>
+        <div id="scheduleAppointmentResult"></div>
+      </div>
+      
+      <div id="allAppointmentsInfo" class="tabcontent">
+        <h2>All Appointments Information</h2>
+        <button id="getAllAppointmentsInfoButton">Get all appointments info</button>
+        <div id="getAllAppointmentsInfoResult"></div>
+      </div>
+      
+      <div id="myModal" class="modal">
+        <div class="modal-content">
+          <span class="close" onclick="closeModal()">&times;</span>
+          <h2>Confirmation Information</h2>
+          <p id="confirmationInfo">Information:</p>
+          <button id="confirmButton" onclick="confirmAction()">Confirm</button>
+          <button id="backButton" onclick="closeModal()">Go Back</button>
+        </div>
+      </div>
+  
+    <script> 
+        window.onload = function() {
+          if ((!sessionStorage.getItem('loggedInUser')) || (sessionStorage.getItem('accountType') !== 'Patient')) {
+              window.location.href = 'login.html'; // Chuyển hướng về trang đăng nhập
+          }
+        };
+
+
+        
+        const getPatientInfoButton = document.getElementById('getPatientInfoButton');
+        getPatientInfoButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            getPatientInfo(sessionStorage.getItem('loggedInUser'));
+        });
+
+        const update = document.getElementById('update');
+        update.addEventListener('submit', function (event) {
+          event.preventDefault();
+          confirmUpdate.style.display = 'block';
+        });
+
+        const confirmUpdate = document.getElementById('confirmUpdate');
+        confirmUpdate.addEventListener('submit', function (event) {
+          event.preventDefault();
+          updatePatientInfo();
+        });
+        
+        const appointmentForm = document.getElementById('appointmentForm');
+        appointmentForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            document.getElementById('displayAvailableDentist').style.display = 'block';
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const appointmentTime = document.getElementById('appointmentTime').value;
+            displayAvailableDentist(appointmentDate,appointmentTime);
+        });
+
+        // Lấy modal
+        const modal = document.getElementById('myModal');
+        // Lấy nút đóng modal
+        const closeButton = document.getElementsByClassName('close')[0];
+        // Lấy nút Confirm và Back
+        
+        const backButton = document.getElementById('backButton');
+        // Lấy phần hiển thị thông tin xác nhận
+        const confirmationInfo = document.getElementById('confirmationInfo');
+
+        // Hàm hiển thị modal
+        function showModal() {
+        modal.style.display = 'block';
+        }
+
+        // Hàm ẩn modal
+        function hideModal() {
+        modal.style.display = 'none';
+        }
+
+        // Sự kiện khi ấn nút Confirm
+        const confirmScheduleButton = document.getElementById('confirmScheduleButton');
+        confirmScheduleButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            const patientPhoneNumber = sessionStorage.getItem('loggedInUser');
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const appointmentTime = document.getElementById('appointmentTime').value;
+
+            const allTextContents = document.getElementById('displayAvailableDentist');
+            const indexOfSelectedOption = allTextContents.selectedIndex;
+            const dentistFullName = allTextContents.options[indexOfSelectedOption].textContent;
+            
+            if (patientPhoneNumber && appointmentDate && appointmentTime && (dentistFullName !== ' '))
+            confirmationInfo.innerHTML =  `
+            Ngày hẹn: ${appointmentDate} <br> 
+            Giờ hẹn: ${appointmentTime} <br> 
+            Nha sĩ phụ trách: ${dentistFullName}`;
+            showModal();
+        });
+
+        // Sự kiện khi ấn nút Confirm
+        const confirmButton = document.getElementById('confirmButton');
+        confirmButton.addEventListener('click', function() {
+            const patientPhoneNumber = sessionStorage.getItem('loggedInUser');
+            const appointmentDate = document.getElementById('appointmentDate').value;
+            const appointmentTime = document.getElementById('appointmentTime').value;
+            const dentistUserName = document.getElementById('displayAvailableDentist').value;
+            scheduleAppointment(patientPhoneNumber, appointmentDate, appointmentTime, dentistUserName);
+            hideModal(); // Ẩn modal sau khi xác nhận
+        });
+
+        // Sự kiện khi ấn nút Back
+        backButton.addEventListener('click', function() {
+        hideModal(); // Ẩn modal khi quay lại để chỉnh sửa thông tin
+        });
+
+        // Sự kiện khi ấn nút đóng modal
+        closeButton.addEventListener('click', function() {
+        hideModal(); // Ẩn modal khi ấn nút đóng
+        });
+
+        getAllAppointmentsInfoButton = document.getElementById('getAllAppointmentsInfoButton');
+        getAllAppointmentsInfoButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            getAllAppointmentsInfo(sessionStorage.getItem('loggedInUser'));
+        });
+
+    </script>
+  
+</body>
+</html>

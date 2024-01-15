@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LOGIN PAGE</title>
+
+  <script src = "login.js"> </script>
+
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <div class="login">
+    <h1>Login</h1>
+    <form id="loginForm">
+      <div class="form-row">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+      </div>
+    
+      <div class="form-row">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+      </div>
+        
+      <input type="submit" value="Đăng nhập">
+    </form>
+  </div>
+
+  <div class="register">
+    <h1>Register</h1>
+    <form id="registerForm">
+      
+      <div class="form-row">
+        <label for="registerPatientFullName">Patient name:</label>
+        <input type="text" id="registerPatientFullName" name="registerPatientFullName" required><br><br>
+      </div>
+        
+      <div class="form-row">
+        <label for="registerPatientPhoneNumber">Phone number:</label>
+        <input type="text" id="registerPatientPhoneNumber" name="registerPatientPhoneNumber" required><br><br>
+      </div>
+    
+      <div class="form-row">
+        <label for="registerPatientPassword">Password:</label>
+        <input type="password" id="registerPatientPassword" name="registerPatientPassword" required><br><br>
+      </div>
+    
+      <div class="form-row">
+        <label for="registerPatientDateOfBirth">Date of birth:</label>
+        <input type="date" id="registerPatientDateOfBirth" name="registerPatientDateOfBirth" required><br><br>
+      </div>
+    
+      <div class="form-row">
+        <label for="registerPatientAddress">Patient address:</label>
+        <input type="text" id="registerPatientAddress" name="registerPatientAddress" required><br><br>
+      </div>
+        
+    
+      <input type="submit" value="Đăng Ký">
+    </form>
+  </div>
+  <div id = "addResult"></div>
+
+
+  <script>
+  
+
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      Login();
+    });
+
+    // form đăng kí user
+    const registerForm = document.getElementById('registerForm');
+    registerForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+      patientRegister();
+    });
+
+  </script>
+</body>
+</html>

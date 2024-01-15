@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ADMIN PAGE</title>
+
+  <script src = "admin.js"> </script>
+  
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    
+  <div class="upperUpper">
+    <div class="tab" id="adminDashboard">
+      
+      <button class="tablinks" onclick="openTab(event, 'manageStaff')">Manage Staff</button>
+      <button class="tablinks" onclick="openTab(event, 'manageDentist')">Manage Dentist</button>
+      <button class="tablinks" onclick="openTab(event, 'manageDrug')">Manage Drug</button>
+      <button class="tablinks" onclick="openTab(event, 'lockAccountTab')">Lock account</button>
+
+    </div>
+  </div>
+
+  <div class="tabUpper">
+
+    <div class="tab tabcontent" id="manageStaff">
+      <button class="tablinks" onclick="openTab(event, 'getAllStaffsInfoTab')">Display Staff's Info</button>
+      <button class="tablinks" onclick="openTab(event, 'addStaffInfoTab')">Add Staff Info</button>
+    </div>
+
+    <div class="tab tabcontent" id="manageDentist">
+      <button class="tablinks" onclick="openTab(event, 'getAllDentistsInfoTab')">Display Dentist's Info</button>
+      <button class="tablinks" onclick="openTab(event, 'addDentistInfoTab')">Add Dentist Info</button>
+    </div>
+
+    <div class="tab tabcontent" id="manageDrug">
+      <button class="tablinks" onclick="openTab(event, 'getAllDrugInfoTab')">Display Drug's Info</button>
+      <button class="tablinks" onclick="openTab(event, 'updateDrugInfoTab')">Update Drug Info</button>
+      <button class="tablinks" onclick="openTab(event, 'updateDrugStockTab')">Update Drug Stock</button>
+      <button class="tablinks" onclick="openTab(event, 'addDrugInfoTab')">Add Drug Info</button>
+      <button class="tablinks" onclick="openTab(event, 'deleteDrugInfoTab')">Delete Drug Info</button>
+    </div>
+
+  </div>
+
+    
+    <div id="getAllStaffsInfoTab" class="tabcontent">
+      <button onclick="getAllStaffsInfo()">Display all staffs information</button>
+      <div id="allStaffsInfo"></div>
+      <h2>Get staff info</h2>
+      <form id="getStaffInfoForm">
+        <label for="staffUserName">Staff user name:</label>
+        <input type="text" id="staffUserName" name="staffUserName" required><br><br>
+        <input type="submit" value="Get Staff information">
+      </form>
+      <div id="getStaffInfo"></div>
+    </div>
+    
+    <div id="addStaffInfoTab" class="tabcontent">
+      <h2>Add Staff information</h2>
+      <form id="addStaffInfoForm">
+        <div class="form-row">
+          <label for="addStaffUserName">Staff username:</label>
+          <input type="text" id="addStaffUserName" name="addStaffUserName" required><br><br>
+        </div>
+
+        <div class="form-row">
+          <label for="addStaffFullName">Staff name:</label>
+          <input type="text" id="addStaffFullName" name="addStaffFullName" required><br><br>
+        </div>
+      
+        <div class="form-row">
+          <label for="addStaffPassword">Staff password:</label>
+          <input type="text" id="addStaffPassword" name="addStaffPassword" required><br><br>
+        </div>
+      
+        <input type="submit" value="Add Staff information">
+      </form>
+      <div id="staffAddResult"></div>
+    </div>
+    
+
+    <div id="getAllDentistsInfoTab" class="tabcontent">
+      <button onclick="getAllDentistsInfo()">Display all Dentists information</button>
+      <div id="allDentistsInfo"></div>
+          <h2>Get Dentist info</h2>
+          <form id="getDentistInfoForm">
+      <label for="dentistUserName">Dentist username:</label>
+      <input type="text" id="dentistUserName" name="dentistUserName" required><br><br>
+      <input type="submit" value="Get Dentist information">
+          </form>
+          <div id="getDentistInfo"></div>
+    </div>   
+    
+    <div id="addDentistInfoTab" class="tabcontent">
+      <h2>Add Dentist information</h2>
+      <form id="addDentistInfoForm">
+      
+        <div class="form-row">
+          <label for="addDentistUserName">Dentist userName:</label>
+          <input type="text" id="addDentistUserName" name="addDentistUserName" required><br><br>
+        </div>
+
+        <div class="form-row">
+          <label for="addDentistFullName">Dentist name:</label>
+          <input type="text" id="addDentistFullName" name="addDentistFullName" required><br><br>
+        </div>
+      
+        <div class="form-row">
+          <label for="addDentistPassword">Dentist password:</label>
+          <input type="text" id="addDentistPassword" name="addDentistPassword" required><br><br>
+        </div>
+      
+        <input type="submit" value="Add Dentist information">
+      </form>
+      <div id="dentistAddResult"></div>
+    </div> 
+    
+    <div id="getAllDrugInfoTab" class="tabcontent">
+      <button onclick="getAllDrugsInfo()">Display all drugs information</button>
+      <div id="allDrugsInfo"></div>
+      <h2>Get drug info</h2>
+      <form id="getDrugInfoForm">
+        <label for="drugId">Drug Id:</label>
+        <input type="text" id="drugId" name="drugId" required><br><br>
+        <input type="submit" value="Get drug information">
+      </form>
+      <div id="getDrugInfo"></div>
+    </div>
+    
+    <div id="updateDrugInfoTab" class="tabcontent">
+      <h2>Update drug information</h2>
+      <class id="updateDrugInfo">
+          <form id="updateDrug">
+            <div class="form-row">
+              <label for="updateDrugId">Enter drug Id:</label>
+              <input type="text" id="updateDrugId" name="updateDrugId" required><br><br>
+            </div>
+            <input type="submit" value="Update">
+          </form>
+          <form id="confirmUpdateDrug">
+            <div class="form-row">
+              <label for="updateDrugName">New drug name:</label>
+              <input type="text" id="updateDrugName" name="updateDrugName" required><br><br>
+            </div>
+            <div class="form-row">
+              <label for="updateUnit">New drug unit:</label>
+              <input type="text" id="updateUnit" name="updateUnit" required><br><br>
+            </div>
+            <div class="form-row">
+              <label for="updateIndication">New drug indication:</label>
+              <input type="text" id="updateIndication" name="updateIndication" required><br><br>
+            </div>
+            <div class="form-row">
+              <label for="updateExpiredDate">New drug expired date:</label>
+              <input type="date" id="updateExpiredDate" name="updateExpiredDate" required><br><br>
+            </div>
+            <div class="form-row">
+              <label for="updatePrice">New drug price:</label>
+              <input type="text" id="updatePrice" name="updatePrice" required><br><br>
+            </div>
+            <input type="submit" value="Confirm update drug information">
+          </form>
+      </class>
+      <div id="drugUpdateResult"></div>
+    </div>
+    
+    <div id="updateDrugStockTab" class="tabcontent">
+      <h2>Update drug stock number</h2>
+      <form id="updateStockNumberForm">
+        <div class="form-row">
+          <label for="updateDrugIdStockNumber">Drug Id:</label>
+          <input type="text" id="updateDrugIdStockNumber" name="updateDrugIdStockNumber" required><br><br>
+        </div>
+        <div class="form-row">
+          <label for="updateStockNumber">New drug stock number:</label>
+          <input type="text" id="updateStockNumber" name="updateStockNumber" required><br><br>
+        </div>
+        <input type="submit" value="Update drug stock number">
+      </form>
+      <div id="drugStockNumberUpdateResult"></div>
+    </div>
+    
+    <div id="addDrugInfoTab" class="tabcontent">
+      <h2>Add drug information</h2>
+      <form id="addDrugInfoForm">
+        <div class="form-row">
+          <label for="addDrugName">Drug name:</label>
+          <input type="text" id="addDrugName" name="addDrugName" required><br><br>
+        </div>
+        <div class="form-row">
+          <label for="addUnit">Drug unit:</label>
+          <input type="text" id="addUnit" name="addUnit" required><br><br>
+        </div>
+        <div class="form-row">
+          <label for="addIndication">Drug indication:</label>
+          <input type="text" id="addIndication" name="addIndication" required><br><br>
+        </div>
+        <div class="form-row">
+          <label for="addExpiredDate">Drug expired date:</label>
+          <input type="date" id="addExpiredDate" name="addExpiredDate" required><br><br>
+        </div>
+        <div class="form-row">
+          <label for="addStockNumber">Drug stock number:</label>
+          <input type="text" id="addStockNumber" name="addStockNumber" required><br><br>
+        </div>
+      
+        <div class="form-row">
+          <label for="addPrice">Drug price:</label>
+          <input type="text" id="addPrice" name="addPrice" required><br><br>
+        </div>
+        <input type="submit" value="Add drug information">
+      </form>
+      <div id="drugAddResult"></div>
+    </div>
+    
+    <div id="deleteDrugInfoTab" class="tabcontent">
+      <h2>Delete drug information</h2>
+      <form id="deleteDrugInfoForm">
+        <label for="deleteDrugId">Drug Id:</label>
+        <input type="text" id="deleteDrugId" name="deleteDrugId" required><br><br>
+      
+        <input type="submit" value="Delete drug information">
+      </form>
+      <div id="drugDeleteResult"></div>
+      <h2>Delete expired drug</h2>
+      <button onclick="deleteExpiredDrugs()">Delete expired drugs</button>
+      <div id="drugsExpiredDeleteResult"></div>
+    </div>
+
+
+    <div id="lockAccountTab" class="tabcontent">
+      <h2>Lock account</h2>
+      <form id="lockAccountForm">
+        <label for="lockAccountUserName">Account username:</label>
+        <input type="text" id="lockAccountUserName" name="lockAccountUserName" required><br><br>
+      
+        <input type="submit" value="Lock">
+      </form>
+      <div id="lockAccountResult"></div>
+    </div>
+
+    <script>
+      // staff
+      const getStaffInfoForm = document.getElementById('getStaffInfoForm');
+      getStaffInfoForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const staffUserName = document.getElementById('staffUserName').value;
+        getStaffInfo(staffUserName);
+      });
+   
+      const addStaffInfoForm = document.getElementById('addStaffInfoForm');
+      addStaffInfoForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const staffFullName = document.getElementById('addStaffFullName').value;
+        const staffUserName = document.getElementById('addStaffUserName').value;
+        const staffPassword = document.getElementById('addStaffPassword').value;
+        addStaffInfo(staffFullName, staffUserName,  staffPassword);
+      });
+        
+      // dentist
+      const getDentistInfoForm = document.getElementById('getDentistInfoForm');
+      getDentistInfoForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const dentistUserName = document.getElementById('dentistUserName').value;
+        getDentistInfo(dentistUserName);
+      });
+      
+      const addDentistInfoForm = document.getElementById('addDentistInfoForm');
+      addDentistInfoForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const dentistFullName = document.getElementById('addDentistFullName').value;
+        const dentistUserName = document.getElementById('addDentistUserName').value;
+        const dentistPassword = document.getElementById('addDentistPassword').value;
+        addDentistInfo(dentistFullName, dentistUserName,  dentistPassword)
+      });
+
+      // drug
+      const getDrugInfoForm = document.getElementById('getDrugInfoForm');
+      getDrugInfoForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const drugId = document.getElementById('drugId').value;
+        getDrugInfo(drugId);
+      });
+
+      const updateDrug = document.getElementById('updateDrug');
+      updateDrug.addEventListener('submit', function(event) {
+        event.preventDefault();
+        confirmUpdateDrug.style.display = 'block';
+      });
+
+      const confirmUpdateDrug = document.getElementById('confirmUpdateDrug');
+      confirmUpdateDrug.addEventListener('submit', function(event) {
+        event.preventDefault();
+        updateDrugInfo();  
+      });
+
+      const updateStockNumberForm = document.getElementById('updateStockNumberForm');
+      updateStockNumberForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        updateStockNumber();  
+      });
+
+      const addDrugInfoForm = document.getElementById('addDrugInfoForm');
+      addDrugInfoForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const drugName = document.getElementById('addDrugName').value;
+        const unit = document.getElementById('addUnit').value;
+        const indication = document.getElementById('addIndication').value;
+        const expiredDate = document.getElementById('addExpiredDate').value;
+        const stockNumber = document.getElementById('addStockNumber').value;
+        const price = document.getElementById('addPrice').value;
+        addDrugInfo( drugName, unit, indication, expiredDate, stockNumber, price);
+      });
+        
+      const deleteDrugInfoForm = document.getElementById('deleteDrugInfoForm');
+      deleteDrugInfoForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        deleteDrugInfo();
+      });
+
+      const lockAccountForm = document.getElementById('lockAccountForm');
+      lockAccountForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const username = document.getElementById('lockAccountUserName').value;
+        lockAccount(username);
+      });
+
+    </script>
+
+</body>
+</html>
