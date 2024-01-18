@@ -431,6 +431,7 @@ app.delete('/deleteExpiredDrugs', async function(req, res){
 app.post('/Login', async function(req, res) {
   const { username, password } = req.body;
   const pool = await conn;
+  console.log('get in')
   const sqlString = 
   `SELECT accountType FROM Account WHERE username = '${username}' AND password = '${password}'`;
   
@@ -441,9 +442,11 @@ app.post('/Login', async function(req, res) {
       request.input('password', sql.Char, password);
       
       const result = await request.execute('proc_DangNhap');
+      console.log(result)
       if(result.returnValue !== 0) {
         res.status(500).json({ message: 'Dang nhap khong hop le' });
       }
+
       else
       if (result.recordset[0]) {
         if (result.recordset[0].accountType === 'Admin') {

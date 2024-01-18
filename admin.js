@@ -484,7 +484,7 @@ async function importDrug() {
         
         const data = await response.json();
         if(response.ok){
-            importResult.textContent = `Bán cho ${data.data.medicalRecId} thuốc ${data.data.drugId} số lượng ${data.data.quantity}`
+            importResult.textContent = `Thêm thuốc thành công`
         }
         else {
             importResult.textContent = "Có lỗi khi bán thuốc"

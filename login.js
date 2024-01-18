@@ -1,7 +1,7 @@
 async function Login() {
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
-  
+  console.log('log')
   try {
     const response = await fetch(`http://localhost:3000/Login`, {
       method: 'POST',
@@ -67,5 +67,5 @@ async function patientRegister() {
   }
 }
 
-// adminLogin, patientLogin,
-module.exports =  { Login,  patientRegister};
+// // adminLogin, patientLogin,
+// module.exports =  { Login,  patientRegister};
