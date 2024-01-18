@@ -14,6 +14,9 @@
     <div class="tab">
       <button class="tablinks" onclick="openTab(event, 'addPatientMedicalRecordTab')">Add patient medical record</button>
       <button class="tablinks" onclick="openTab(event, 'checkAppointmentsTab')">Check Appointment</button>
+      <button class="tablinks" onclick="openTab(event, 'changePassword')">Change password</button>
+      <button class="tablinks" onclick="openTab(event, 'addWorkSchedule')">Add work schedule</button>
+      <button class="tablinks" onclick="openTab(event, 'updateWorkSchedule')">Update work schedule</button>
       
     </div>
 
@@ -78,6 +81,58 @@
       <div id="checkAppointmentsListByDateResult"></div>
     </div>
 
+    <div id="changePassword" class="tabcontent">
+      <h2>Change password</h2>
+      <form id="changePasswordForm">
+        <label for="oldPassword">Old Password</label>
+        <input type="password" id="oldPassword" name="selectedDate" required><br><br>
+        <label for="newPassword">New Password</label>
+        <input type="password" id="newPassword" name="selectedDate" required><br><br>
+        <input type="submit" value="Change">
+      </form>
+      
+      <div id="changePasswordResult"></div>
+    </div>
+
+    <div id="addWorkSchedule" class="tabcontent">
+      <h2>Add work schedule</h2>
+      <form id="addWorkScheduleForm">
+        <label for="addworkDate">Choose date:</label>
+        <input type="date" id="addworkDate" name="selectedDate" required><br><br>
+        <label for="addstartTime">Choose start time</label>
+        <input type="time" id="addstartTime" name="selectedDate" required><br><br>  <label for="addendTime">Choose end time</label>
+        <input type="time" id="addendTime" name="selectedDate" required><br><br> 
+        <input type="submit" value="Check appointments list">
+      </form>
+      <div id="addWorkScheduleResult"></div>
+    </div>
+
+    <div id="updateWorkSchedule" class="tabcontent">
+      <h2>Update work schedule</h2>
+      <form id="updateWorkScheduleForm">
+        <label for="scheId">Work Schedule ID</label>
+        <input type="text" id="scheId" name="selectedDate" required><br><br>
+        <label for="update">Choose date:</label>
+        <input type="date" id="updateworkDate" name="selectedDate" required><br><br>
+        <label for="updatestartTime">Choose start time</label>
+        <input type="time" id="updatestartTime" name="selectedDate" required><br><br>  <label for="updateendTime">Choose end time</label>
+        <input type="time" id="updateendTime" name="selectedDate" required><br><br> 
+        <input type="submit" value="Update">
+      </form>
+      <div id="updateWorkScheduleResult"></div>
+    </div>
+
+    <div id="checkAppointmentsTab" class="tabcontent">
+      <h2>Check appointments list</h2>
+      <form id="checkAppointmentsListByDateForm">
+        <label for="selectedDate">Choose date:</label>
+        <input type="date" id="selectedDate1" name="selectedDate" required><br><br>
+        <input type="submit" value="Check appointments list">
+      </form>
+      
+      <div id="checkAppointmentsListByDateResult"></div>
+    </div>
+
     <script>
 
       const addPatientMedicalRecordForm = document.getElementById('addPatientMedicalRecordForm');
@@ -124,6 +179,26 @@
         const selectedDate = document.getElementById('selectedDate').value;
         checkAppointmentsListByDate(dentistUserName,selectedDate);
       });
+
+      const changePasswordForm = document.getElementById('changePasswordForm');
+      changePasswordForm.addEventListener('submit', (e)=> {
+        e.preventDefault();
+        changePasswordHandler();
+      })
+
+      const addWorkScheduleForm = document.getElementById('addWorkScheduleForm');
+      addWorkScheduleForm.addEventListener('submit',e=> {
+        e.preventDefault();
+        const dentistUserName = sessionStorage.getItem('loggedInUser');
+        addWorkScheduleHandler();
+      })
+
+      const updateWorkScheduleForm = document.getElementById('updateWorkScheduleForm');
+      updateWorkScheduleForm.addEventListener('submit',e=> {
+        e.preventDefault();
+
+        updateWorkScheduleHandler();
+      })
     
     </script>
 

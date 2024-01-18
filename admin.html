@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>ADMIN PAGE</title>
 
-  <script src = "admin.js"> </script>
+  
   
   <link rel="stylesheet" href="admin.css">
 </head>
@@ -39,6 +39,8 @@
       <button class="tablinks" onclick="openTab(event, 'updateDrugStockTab')">Update Drug Stock</button>
       <button class="tablinks" onclick="openTab(event, 'addDrugInfoTab')">Add Drug Info</button>
       <button class="tablinks" onclick="openTab(event, 'deleteDrugInfoTab')">Delete Drug Info</button>
+      <button class = "tablinks" onclick="openTab(event,'sellDrug')">Sell Drug</button>
+      <button class = "tablinks" onclick="openTab(event,'importDrug')">Import Drug</button>
     </div>
 
   </div>
@@ -240,6 +242,32 @@
       <div id="lockAccountResult"></div>
     </div>
 
+    <div id="sellDrug" class="tabcontent">
+      <h2>Sell Drug</h2>
+      <form id="sellDrugForm">
+        <label for="sellDrugMedId">Medical Record ID:</label>
+        <input type="text" id="sellDrugMedId" name="lockAccountUserName" required><br><br>
+        <label for="sellDrugDrugId">Drug ID:</label>
+        <input type="text" id="sellDrugDrugId" name="lockAccountUserName" required><br><br><label for="sellDrugQuantity">Quantity:</label>
+        <input type="text" id="sellDrugQuantity" name="lockAccountUserName" required><br><br>
+        <input type="submit" value="Sell">
+      </form>
+      <div id="sellDrugResult"></div>
+    </div>
+
+    <div id="importDrug" class="tabcontent">
+      <h2>import Drug</h2>
+      <form id="importDrugForm">
+        <label for="importDrugDrugId">Drug ID:</label>
+        <input type="text" id="importDrugDrugId" name="lockAccountUserName" required><br><br><label for="importDrugQuantity">Quantity:</label>
+        <input type="text" id="importDrugQuantity" name="lockAccountUserName" required><br><br>
+        <input type="submit" value="import">
+      </form>
+      <div id="importDrugResult"></div>
+    </div>
+
+    <script src="https://cdn.socket.io/4.7.4/socket.io.min.js" integrity="sha384-Gr6Lu2Ajx28mzwyVR8CFkULdCU7kMlZ9UthllibdOSo6qAiN+yXNHqtgdTvFXMT4" crossorigin="anonymous"></script>
+    <script src = "admin.js"> </script>
     <script>
       // staff
       const getStaffInfoForm = document.getElementById('getStaffInfoForm');
@@ -276,6 +304,23 @@
       });
 
       // drug
+      const sellDrugForm = document.getElementById('sellDrugForm');
+      sellDrugForm.addEventListener('submit', (event)=> {
+        event.preventDefault();
+        const medicalRecId = document.getElementById('sellDrugMedId');
+        const drugId = document.getElementById('sellDrugDrugId');
+        const quantity= document.getElementById('sellDrugQuantity');
+        sellDrug() 
+      })
+
+      const importDrugForm = document.getElementById('importDrugForm');
+      console.log(importDrug)
+      importDrugForm.addEventListener('submit' , (event) => {
+        console.log('hey')
+        event.preventDefault();
+        importDrug();
+      })
+
       const getDrugInfoForm = document.getElementById('getDrugInfoForm');
       getDrugInfoForm.addEventListener('submit', function(event) {
         event.preventDefault();

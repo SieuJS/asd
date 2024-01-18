@@ -128,6 +128,7 @@ async function addStaffInfo(staffFullName, staffUserName,  staffPassword) {
 //dentist
 async function getAllDentistsInfo() {
     const allDentistsInfo = document.getElementById('allDentistsInfo');
+    
     try {
         const response = await fetch('http://localhost:3000/getAllDentistsInfo', {
             method: 'POST',
@@ -135,7 +136,9 @@ async function getAllDentistsInfo() {
                 'Content-Type': 'application/json'
             }
         })
+        console.log('sent')
         const data = await response.json();
+        console.log(data)
         if (response.status === 200) {            
             allDentistsInfo.innerHTML = ''; 
             const dentistsTable = document.createElement('table');
@@ -436,6 +439,62 @@ async function addDrugInfo(drugName, unit, indication, expiredDate, stockNumber,
     }  
 }
 
+async function sellDrug() {
+    const medicalRecId = document.getElementById('sellDrugMedId').value;
+    const drugId = document.getElementById('sellDrugDrugId').value;
+    const quantity= document.getElementById('sellDrugQuantity').value;
+    const sellResult = document.getElementById('sellDrugResult')
+    try {
+        const response = await fetch(`http://localhost:3000/sellDrug`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ medicalRecId,drugId,quantity})
+        },
+        )
+        const data = await response.json();
+
+        if(response.ok){
+            sellResult.textContent = `Bán cho ${data.data.medicalRecordId} thuốc ${data.data.drugId} số lượng ${data.data.quantity}`
+        }
+        else {
+            sellResult.textContent = "Có lỗi khi bán thuốc"
+        }
+    }
+    catch (err){
+
+    }
+}
+
+async function importDrug() {
+
+    const drugId = document.getElementById('importDrugDrugId').value;
+    const quantity= document.getElementById('importDrugQuantity').value;
+    const importResult = document.getElementById('importDrugResult')
+    try {
+        const response = await fetch(`http://localhost:3000/importDrug`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({drugId,quantity})
+        },
+        )
+        
+        const data = await response.json();
+        if(response.ok){
+            importResult.textContent = `Bán cho ${data.data.medicalRecId} thuốc ${data.data.drugId} số lượng ${data.data.quantity}`
+        }
+        else {
+            importResult.textContent = "Có lỗi khi bán thuốc"
+        }
+    }
+    catch (err){
+        
+    }
+}
+
 async function deleteDrugInfo() {
     const drugDeleteResult = document.getElementById('drugDeleteResult');
     const drugId = document.getElementById('deleteDrugId').value;
@@ -453,6 +512,8 @@ async function deleteDrugInfo() {
         console.error('Có lỗi xảy ra', error);
     }
 }
+
+
 
 async function deleteExpiredDrugs() {
     const drugsExpiredDeleteResult = document.getElementById('drugsExpiredDeleteResult');
@@ -508,5 +569,5 @@ function openTab(evt, tabName) {
 
 module.exports = { getAllStaffsInfo, getStaffInfo, addStaffInfo }
 module.exports = { getAllDentistsInfo, getDentistInfo, addDentistInfo};
-module.exports = { getAllDrugsInfo, getDrugInfo, updateDrugInfo, updateStockNumber, addDrugInfo, deleteDrugInfo, deleteExpiredDrugs};
+module.exports = { getAllDrugsInfo, getDrugInfo, updateDrugInfo, updateStockNumber, addDrugInfo, deleteDrugInfo, deleteExpiredDrugs, sellDrug, importDrug};
 module.exports = { lockAccount, openTab};

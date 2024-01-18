@@ -2,7 +2,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const sql = require('mssql')
 const app = express();
+const server = require('http').createServer(app);
+
+
 app.use(bodyParser.json());
+
+
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // Cho phép truy cập từ tất cả các nguồn (* hoặc bạn có thể chỉ định nguồn cụ thể)
@@ -18,7 +23,7 @@ app.post('/getAllPatientsInfo', async function(req, res){
   const sqlString = "SELECT * FROM Patient";
   try {
     const request = pool.request();
-    const result = await request.query(sqlString);
+    const result = await request.execute("proc_LayDanhSachBenhNhan");
     const patients = result.recordset;
     if (patients) {
       res.status(200).json(patients); 
@@ -169,12 +174,12 @@ app.post('/addStaffInfo', async function(req, res){
     
     const result = await request.execute('proc_ThemNhanVien');
     if(result.returnValue !== 0) {
-      res.status(500).json({ message: 'Có lỗi xảy ra khi thêm thông tin nhân viên' });
+      return res.status(500).json({ message: 'Có lỗi xảy ra khi thêm thông tin nhân viên' });
     }
     else if (result.rowsAffected[0] > 0) {
-      res.status(200).json({ message: 'Thông tin nhân viên đã được thêm.' });
+      return res.status(200).json({ message: 'Thông tin nhân viên đã được thêm.' });
     } else {
-      res.status(500).json({ message: 'Có lỗi xảy ra khi thêm thông tin nhân viên' });
+      return res.status(500).json({ message: 'Có lỗi xảy ra khi thêm thông tin nhân viên' });
     }
   } catch (error) {
     console.error('Username nhân viên đã tồn tại', error);
@@ -187,7 +192,7 @@ app.post('/getAllDentistsInfo', async function(req, res){
   const sqlString = "SELECT * FROM Dentist";
   try {
     const request = pool.request();
-    const result = await request.execute('proc_LayDanhSachBenhNhan');
+    const result = await request.execute('proc_LayDanhSachBacSi');
     const dentists = result.recordset;
     if (dentists) {
       res.status(200).json(dentists); 
@@ -209,6 +214,7 @@ app.post('/getDentistInfo', async function(req, res) {
     const request = pool.request();
     const result = await request.query(sqlString);
     const dentist = result.recordset[0];
+    console.log(result)
     if (dentist) {
       res.status(200).json(dentist); 
     } else {
@@ -236,6 +242,7 @@ app.post('/addDentistInfo', async function(req, res){
     request.input('password', sql.Char, dentistPassword);
     
     const result = await request.execute('proc_ThemBacSi');
+
     if(result.returnValue !== 0) {
       res.status(500).json({ message: 'Có lỗi xảy ra khi thêm thông tin nha sĩ' });
     }
@@ -247,7 +254,7 @@ app.post('/addDentistInfo', async function(req, res){
     }
   } catch (error) {
     console.error('Username nha sĩ đã tồn tại', error);
-    res.status(500).json({ message: 'Username nha sĩ đã tồn tại' });
+    res.status(500).json({ message: 'Không thể thêm nha sĩ' });
   }
 });
 
@@ -355,11 +362,11 @@ app.post('/addDrugInfo', async function(req, res){
   try {
     const request = pool.request();
     request.input('drugName', sql.Char, drugName);
-    request.input('unti', sql.Char, unit);
+    request.input('unit', sql.Char, unit);
     request.input('indi', sql.Char, indication);
     request.input('expire', sql.Date, expiredDate);
-    request.input('stock', sql.int, stockNumber);
-    request.input('price', sql.int, price);
+    request.input('stock', sql.Int, stockNumberInt);
+    request.input('price', sql.Int, priceInt);
     const result = await request.execute('proc_ThemThuoc');
     if(result.returnValue !== 0) {
       res.status(500).json({ message: 'Có lỗi xảy ra khi thêm thông tin thuốc' });
@@ -379,10 +386,14 @@ app.post('/addDrugInfo', async function(req, res){
 app.delete('/deleteDrugInfo/:drugId', async function(req, res){
   const drugId  = req.params.drugId;
   const pool = await conn;
-  const sqlString = `DELETE FROM Drug WHERE drugId = '${drugId}'`;
   try {
     const request = pool.request();
-    const result = await request.query(sqlString);
+    request.input('drugId' , sql.Int, parseInt(drugId))
+    const result = await request.execute('proc_XoaThuoc');
+    if (result.returnValue !== 0) {
+      res.status(500).json({ message: 'Lỗi khi xoá thuốc' });
+    }
+    console.log(result)
     if (result.rowsAffected[0] === 1) {
       res.status(200).json({ message: 'Thông tin thuốc đã được xóa' });  
     } else {
@@ -539,7 +550,9 @@ app.post('/displayAvailableDentist', async function(req, res) {
                       AND ws.busyStatus = 'Free' `;
   try {
     const request = pool.request();
-    const result = await request.query(sqlString);
+    request.input('appointmentDate', sql.Date,appointmentDate );
+    request.input('appointmentTime', sql.Char, appointmentTime);
+    const result = await request.execute("proc_TimBacSiRanh");
     const dentists = result.recordset;
     if (result.rowsAffected[0] > 0) {
       res.status(200).json(dentists); 
@@ -661,6 +674,9 @@ app.post('/getServicePrice', async function(req, res){
     res.status(500).json({ message: 'Có lỗi xảy ra khi lấy giá dịch vụ' });
   }
 });
+
+
+
 
 app.post('/getDrugPrice', async function(req, res){
   const {drugId} = req.body;
@@ -908,6 +924,143 @@ app.post('/lockAccount', async function(req, res){
   };
 });
 
-app.listen(3000, function(){
-    console.log("server listen at port 3000");
+app.post ('/sellDrug', async (req,res) => {
+  const {medicalRecId , drugId ,quantity} = req.body;
+  const pool = await conn;
+  let request = pool.request();
+  let result
+  try {
+    request = pool.request();
+    request.input('medicalRecId', sql.Int, medicalRecId);
+    request.input('drugId', sql.Int, drugId);
+    request.input('quantity', sql.Int, quantity);
+    result = await request.execute('proc_XuatThuoc');
+    console.log(result)
+    if (result.returnValue !==0){
+      throw new Error("Có lỗi xảy ra khi bán thuốc")
+    } 
+    
+  }
+  
+  catch (err) {
+    console.error(err)
+    return res.status(500).json({message : "Có lỗi xảy ra khi bán thuốc"})
+  }
+  return res.status(200).json({message : "Thêm thông tin thành công", data : result.recordset[0]})
+})
+
+
+
+
+app.post('/importDrug', async (req, res) => {
+  const {drugId, quantity} = req.body;
+  const pool = await conn;
+  let request = pool.request();
+  let result
+  try {
+    request = pool.request();
+    console.log(drugId, quantity)
+    request.input('drugId', sql.Int, parseInt(drugId));
+    request.input('addNumber', sql.Int, parseInt(quantity));
+    result = await request.execute('proc_NhapKhoThuoc');
+    console.log(result)
+    if (result.returnValue !==0){
+      throw new Error("Có lỗi xảy ra khi bán thuốc")
+    } 
+    
+  }
+  catch (err) {
+    console.log(err.message)
+    return res.status(500).json({message : "Có lỗi xảy ra thêm thuốc"})
+  }
+  return res.status(200).json({message : "Thêm thông tin thành công"})
+})
+
+
+app.post('/changePassword', async (req, res) => {
+  const {username , oldPassword, newPassword} = req.body;
+  console.log(username )
+  const pool = await conn;
+  let request = pool.request();
+  let result
+  try {
+      request = pool.request();
+      request.input('username' , sql.Char, username );
+      request.input('oldPass', sql.Char, oldPassword.trim());
+      request.input('newPass', sql.Char, newPassword.trim());
+      result = await request.execute('proc_DoiMatKhau');
+      console.log(result)
+      if (result.returnValue !==0){
+
+        throw new Error("Có lỗi xảy ra ")
+      } 
+      
+    }
+    catch (err) {
+      console.log(err.message)
+      return res.status(500).json({message : "Có lỗi "})
+    }
+  
+  return res.status(200).json({message : "Đổi mật khẩu thành công"})
+}
+)
+
+app.post('/addWorkSchedule', async(req , res, next) => {
+  const {username, addWorkDate, addStartTime, addEndTime} =req.body;
+  const pool = await conn;
+  let request = pool.request();
+  let result
+  try {
+      request = pool.request();
+      request.input('dentistUsername' , sql.Char, username );
+      request.input('workingDate', sql.Date, addWorkDate);
+      request.input('startTime', sql.Char, addStartTime);
+      request.input('endTime', sql.Char, addEndTime);
+      
+      result = await request.execute('proc_ThemLichLamViec');
+      console.log(result)
+      if (result.returnValue !==0){
+        throw new Error("Có lỗi xảy ra ")
+      } 
+      
+    }
+    catch (err) {
+      console.log(err.message)
+      return res.status(500).json({message : "Có lỗi "})
+    }
+  
+  return res.status(200).json({message : "Thêm lịch thành công"})
+})
+
+app.post('/updateWorkSchedule', async(req , res, next) => {
+  const {username,scheduleId, updateWorkDate, updateStartTime, updateEndTime} =req.body;
+  const pool = await conn;
+  let request = pool.request();
+  let result
+  try {
+      request = pool.request();
+      request.input('dentistUsername' , sql.Char, username );
+      request.input('scheduleId', sql.Int, parseInt(scheduleId));
+      request.input('workingDate', sql.Date, updateWorkDate);
+      request.input('startTime', sql.Char, updateStartTime);
+      request.input('endTime', sql.Char, updateEndTime);
+      
+      result = await request.execute('proc_SuaLichHen');
+      console.log(result)
+      if (result.returnValue !==0){
+        throw new Error("Có lỗi xảy ra ")
+      } 
+      
+    }
+    catch (err) {
+      console.log(err.message)
+      return res.status(500).json({message : "Có lỗi "})
+    }
+  
+  return res.status(200).json({message : "Sửa lịch thành công"})
+})
+
+
+server.listen(3000, function(){
+  console.log("server listen at port 3000");
 });

@@ -238,6 +238,85 @@ async function checkAppointmentsListByDate(dentistUserName,selectedDate) {
     }
 }
 
+const  changePasswordHandler = async() => {
+    const dentistUserName = sessionStorage.getItem('loggedInUser');
+
+        const oldPassword = document.getElementById('oldPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const changePasswordResult = document.getElementById('changePasswordResult');
+        try {
+            const response = await fetch('http://localhost:3000/changePassword', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({username : dentistUserName, oldPassword, newPassword})
+            })
+            const data = await response.json();
+                changePasswordResult.textContent =
+                response.ok ?   "Đổi mật khẩu thành công" : "Đổi mật khẩu thất bại"
+
+        }
+        catch(err){
+            changePasswordResult.textContent =
+            "Đổi mật khẩu thất bại"
+        }
+}
+
+const addWorkScheduleHandler = async() => {
+    const dentistUserName = sessionStorage.getItem('loggedInUser');
+    const addWorkDate = document.getElementById('addworkDate').value;
+    const addStartTime = document.getElementById('addstartTime').value;
+    const addEndTime = document.getElementById('addendTime').value;
+    const addWorkScheduleResult = document.getElementById('addWorkScheduleResult');
+    try {
+        const response = await fetch('http://localhost:3000/addWorkSchedule', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({username : dentistUserName, addWorkDate, addStartTime, addEndTime})
+        })
+        const data = await response.json();
+        console.log(data)
+            addWorkScheduleResult.textContent = "Thêm lịch" +
+            response.status === 200  ?   " thành công" : " thất bại"
+
+    }
+    catch(err){
+        addWorkScheduleResult.textContent =
+        "Thêm lịch thất bại"
+    }
+}
+
+const updateWorkScheduleHandler = async() => {
+    console.log('helo')
+    const dentistUserName = sessionStorage.getItem('loggedInUser');
+    const updateWorkDate = document.getElementById('updateworkDate').value;
+    const updateStartTime = document.getElementById('updatestartTime').value;
+    const updateEndTime = document.getElementById('updateendTime').value;
+    const scheduleId = document.getElementById('scheId').value;
+    const updateWorkScheduleResult = document.getElementById('updateWorkScheduleResult');
+    try {
+        const response = await fetch('http://localhost:3000/updateWorkSchedule', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({username : dentistUserName, updateWorkDate, updateStartTime, updateEndTime, scheduleId})
+        })
+        const data = await response.json();
+        console.log(data)
+        updateWorkScheduleResult.textContent = "Sửa lịch" +
+        response.status === 200  ?   " thành công" : " thất bại"
+
+    }
+    catch(err){
+        updateWorkScheduleResult.textContent =
+        "Thêm lịch thất bại"
+    }
+}
+
 function openTab(evt, tabName) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
@@ -251,6 +330,8 @@ function openTab(evt, tabName) {
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.className += " active";
   }
+
+
 
 
 module.exports = { addPatientMedicalRecord , checkAppointmentsListByDate, searchService, searchDrug, addService, addDrug, openTab};
